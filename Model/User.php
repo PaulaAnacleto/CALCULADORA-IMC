@@ -28,8 +28,9 @@
                 $stmt = $this->db->prepare($sql);
 
                 //REFERENCIAR OS DADOS PASSADOS PELO COMANDO SQL COM PARAMETROS DA FUNÇÃO 
+                $stmt->bindParam(':user_fullname', $user_fullname, PDO::PARAM_STR);
+                //EXECUTAR TUDO 
 
-                EXECUTAR TUDO 
             } catch (PDOException $error) {
         }
 
