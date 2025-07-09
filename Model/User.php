@@ -23,15 +23,23 @@
             try {
                 //INSERÇÃO DE DADOS NA LINGUGEM SQL
                 $sql = 'INSERT INTO user (user_fullname, email, password, created_at) VALUES (:user_fullname, :email, :password, NOW())';
+
+                $hashPassword = password_hash($password, PASSWORD_DEFAULT);
                 
                 //PREPARA O BANCO DE DADOS PARA RECEBER O COMANDO ACIMA ]
                 $stmt = $this->db->prepare($sql);
 
                 //REFERENCIAR OS DADOS PASSADOS PELO COMANDO SQL COM PARAMETROS DA FUNÇÃO 
                 $stmt->bindParam(':user_fullname', $user_fullname, PDO::PARAM_STR);
-                //EXECUTAR TUDO 
+                $stmt->bindParam(':email', $user_fullname, PDO::PARAM_STR);
+                $stmt->bindParam(':password', $hashPassword, PDO::PARAM_STR);
 
+                //EXECUTAR TUDO 
+                $stmt->execute();
+                //EXIBIR MENSAGEM DE ERRO COMPLETA E PARRAR A EXECUÇÃO 
             } catch (PDOException $error) {
+                echo "Erro ao executar o comando: " . $error->getMessage();
+                return false; 
         }
 
     }
