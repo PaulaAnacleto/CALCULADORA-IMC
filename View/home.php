@@ -1,3 +1,26 @@
+<?php
+    require_once '../vendor/autoload.php'; // importa o autoload para carregar as classes automaticamente
+
+    //IMPORTANDO A CLASSE IMCS 
+    use Model\Imcs; // importa a classe Imcs para manipulação dos dados do IMC
+
+    //CRIANDO UM OBJETO PARA REPRESENTAR CADA IMC CRIADO
+    $imc = new Imcs(); // Cria uma instância da classe Imcs para manipular os dados do IMC
+
+    if($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if(isset($_POST['weight'], $_POST['height'])) {
+            $weight = $_POST['weight']; // Obtém o peso do formulário
+            $height = $_POST['height']; // Obtém a altura do formulário
+
+            // ROUND é o igual ao toFixed do JavaScript
+            $result = round($weight / ($height * $height),2); // Calcula o IMC usando a fórmula IMC = peso / (altura * altura)
+
+            $imc->createImc($weight, $height, $result); // Chama o método createImc da classe Imcs para salvar os dados do IMC no banco de dados
+        }
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
