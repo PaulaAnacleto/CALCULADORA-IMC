@@ -2,10 +2,16 @@
     require_once '../vendor/autoload.php'; // importa o autoload para carregar as classes automaticamente
 
     //IMPORTANDO A CLASSE IMCS 
-    use Model\Imcs; // importa a classe Imcs para manipulação dos dados do IMC
+    use Controller\ImcController; // importa a classe Imcs para manipulação dos dados do IMC
 
     //CRIANDO UM OBJETO PARA REPRESENTAR CADA IMC CRIADO
-    $imc = new Imcs(); // Cria uma instância da classe Imcs para manipular os dados do IMC
+    $imcController = new ImcController(); // Cria uma instância da classe Imcs para manipular os dados do IMC
+
+    //var_dump($imcController);
+
+    $imcResult = null; 
+
+    
 
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(isset($_POST['weight'], $_POST['height'])) {
@@ -13,9 +19,13 @@
             $height = $_POST['height']; // Obtém a altura do formulário
 
             // ROUND é o igual ao toFixed do JavaScript
-            $result = round($weight / ($height * $height),2); // Calcula o IMC usando a fórmula IMC = peso / (altura * altura)
+            //$result = round($weight / ($height * $height),2); // Calcula o IMC usando a fórmula IMC = peso / (altura * altura)
 
-            $imc->createImc($weight, $height, $result); // Chama o método createImc da classe Imcs para salvar os dados do IMC no banco de dados
+            $imcResult = $imcController->calculateImc($weight, $height);
+
+            if($imcResult['BMIrange'] != "Por favor, informe peso e altura para obter o seu IMC.") {
+                $imcController->saveImc($weight, $height, $imcResult['imc']); // Chama o método saveImc da classe Imcs para salvar os dados do IMC no banco de dados
+            }
         }
     }
 ?>
@@ -132,13 +142,20 @@
                 <div class="result">
                     <div class="result__info">
                         <!-- RESULTADO DO IMC -->
+                        <?php if($imcResult):?>
+                            <p>Seu IMC é: <?php echo $imcResult['imc'] ?? ''; ?></p>
+                            <p>Categoria: <?php echo $imcResult['BMIrange']; ?></p>
+                        <?php else: ?>
+                            <i class= "bi bi-calculator"></i>
+                            <p>Preencha os dados ao lado para ver o resultado</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-
+1
 </body>
 
 </html>
