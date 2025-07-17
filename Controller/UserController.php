@@ -18,9 +18,9 @@
                     return false;
                 }
 
-                $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+                //$hashPassword = password_hash($password, PASSWORD_DEFAULT);
 
-                return $this->userModel->registerUser($user_fullname, $email, $hashPassword); // Chama o método registerUser da classe User para registrar o usuário no banco de dados
+                return $this->userModel->registerUser($user_fullname, $email, $password); // Chama o método registerUser da classe User para registrar o usuário no banco de dados
 
             } catch(Exception $error) {
                 echo "Erro ao cadastrar o usuário: " . $error->getMessage();
