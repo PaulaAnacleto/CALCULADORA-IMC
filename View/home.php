@@ -1,17 +1,31 @@
 <?php
+    session_start();
     require_once '../vendor/autoload.php'; // importa o autoload para carregar as classes automaticamente
 
     //IMPORTANDO A CLASSE IMCS 
     use Controller\ImcController; // importa a classe Imcs para manipulação dos dados do IMC
+    use Controller\UserController;
 
     //CRIANDO UM OBJETO PARA REPRESENTAR CADA IMC CRIADO
     $imcController = new ImcController(); // Cria uma instância da classe Imcs para manipular os dados do IMC
+    $userController = new UserController(); // Cria uma instância da classe UserController para manipular
 
     //var_dump($imcController);
 
     $imcResult = null; 
+    $userInfo = null;
 
-    
+    //VERIFICAR SE HOUVE LOGIN
+    if(!$userController->isLoggedIn()){
+        header('Location: ../index.php');
+        exit();
+    }
+
+    $user_id = $_SESSION['id'];
+    $user_fullname = $_SESSION['user_fullname'];
+    $email = $_SESSION['email'];
+
+    $userInfo = $userController->getUserData($user_id, $user_fullname, $email);
 
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(isset($_POST['weight'], $_POST['height'])) {
@@ -68,7 +82,12 @@
                             d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
                     </svg>
                 </figure>
-                <!-- INFORMAÇÃO DO USUÁRIO -->
+                <?php if ($userInfo): ?>
+                    <div class="user_info_details d-flex flex-column">
+                        <p class="text-white m-0"><?php echo htmlspecialchars($userInfo['user_fullname']) ?></p>
+                        <p><?php echo htmlspecialchars($userInfo['email']) ?></p>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="d-flex gap-4">

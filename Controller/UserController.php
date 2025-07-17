@@ -14,7 +14,7 @@
         //RESGISTRO DE USUÁRIO
         public function registerUser($user_fullname, $email, $password){
             try {
-                if (empty($user_fullname) or ($email) or ($password)){
+                if (empty($user_fullname) or empty($email) or empty($password)){
                     return false;
                 }
 
@@ -65,7 +65,6 @@
 
         //RESGATAR DADOS DO USUÁRIO
         public function getUserData($id, $user_fullname, $email){
-            $id = $_SESSION['id'];
 
             return $this->userModel->getUserInfo($id, $user_fullname, $email); // Chama o método getUserInfo da classe User para obter os dados do usuário logado
         }

@@ -2,10 +2,13 @@
     //BUSCANDO E CARREGANDO O ARQUIVO AUTOLOAD
     require_once '../vendor/autoload.php';
 
-    //IMPORTAR A CLASSE USER
-    use Model\User;
+    //IMPORTANDO O USERCONTROLLER
+    use Controller\UserController;
 
-    $user = new User();
+    $userController = new UserController();
+
+    $registerUserMessage = '';
+   
    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
        if(isset($_POST['user_fullname'], $_POST['email'], $_POST['password'])) {
@@ -13,7 +16,21 @@
             $email = $_POST['email'];
             $password = $_POST['password']; 
 
-            $user->registerUser($user_fullname, $email, $password);
+            //$user->registerUser($user_fullname, $email, $password);
+            //USO DO CONTROLLER PARA VERIFICAÇÃO DE E-MAIL E CADASTRO DE USUÁRIO
+
+            //JÁ EXISTE UM E-MAILCADASTRADO?
+            if($userController->checkUserByEmail($email)){
+                $registerUserMessage = "Já existe um ususário cadastrado com esse endereço de e-mail.";
+            } else{
+                if($userController->registerUser($user_fullname, $email, $password)){
+                    header('Location: ../index.php');
+                    exit();
+                }else{
+                    $registerUserMessage = "Erro  ao registrar informações.";
+                }
+            }
+            
     }
 }
 ?>
@@ -108,7 +125,9 @@
             <p class="text-center">Já tem uma conta? <a href="../index.php">Faça login aqui</a></p>
             </div>
         </form>
-        <p></p>
+        <p> 
+            <?php echo $registerUserMessage; ?>
+        </p>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"

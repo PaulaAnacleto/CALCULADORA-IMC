@@ -34,11 +34,11 @@ class User
 
             //REFERENCIAR OS DADOS PASSADOS PELO COMANDO SQL COM PARAMETROS DA FUNÇÃO 
             $stmt->bindParam(':user_fullname', $user_fullname, PDO::PARAM_STR);
-            $stmt->bindParam(':email', $user_fullname, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':password', $hashPassword, PDO::PARAM_STR);
 
             //EXECUTAR TUDO 
-            $stmt->execute();
+            return $stmt->execute();
             //EXIBIR MENSAGEM DE ERRO COMPLETA E PARRAR A EXECUÇÃO 
         } catch (PDOException $error) {
             echo "Erro ao executar o comando: " . $error->getMessage();
@@ -90,6 +90,8 @@ class User
              * COMO OBTER INFORMAÇÕES:
              * $user['user_fullname'];
              */
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch (PDOException $error) {
             echo "Erro ao buscar informação: " . $error->getMessage();
