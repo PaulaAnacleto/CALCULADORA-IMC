@@ -28,24 +28,46 @@
             }
         }
 
+        //EMAIL JÁ CADASTRADO?
+        public function checkUserByEmail($email) {
+            return $this->userModel->getUserByEmail($email); // Chama o método getUserByEmail da classe User para verificar se o email já está cadastrado
+        }
+
         //LOGIN DE USUÁRIO
         public function login($email, $password){
-            $user = $this->userModel->getUserByEmail($email); 
+            $user = $this->userModel->getUserByEmail($email);
+            /**
+             * $user = [
+             * "id" : 1,
+             * "user_fullname" : "Teste",
+             * "email" : "example@teste.com",
+             * "password" : "$2y$10$eImiTMZG4qj8/6z5a1b1uO3Q0Z5f5F5F5F5F5F5F5F5F5F5F5F5F5"
+             * ]
+             *  */ 
+            
+            if($user && password_verify($password, $user['password'])){
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['user_fullname'] = $user['user_fullname'];
+                $_SESSION['email'] = $user['email'];
 
-            if($user){
-                if(crypt($password, $user['password'])){
-                    $_SESSION['id'] = $user['id'];
-                    $_SESSION['user_fullname'] = $user['user_fullname'];
-                    $_SESSION['email'] = $user['email'];
+                return true;
+            }return false;
 
-                    return true; 
-                } else {
-                    return false;
-                }
-            } return false; 
-            }
+
         //USUÁRIO LOGADO?
 
         //RESGATAR DADOS DO USUÁRIO
     }
+        //USUÁRIO LOGADO?
+        public function isLoggedIn(){
+            return isset($_SESSION['id']);
+        }
+
+        //RESGATAR DADOS DO USUÁRIO
+        public function getUserData($id, $user_fullname, $email){
+            $id = $_SESSION['id'];
+
+            return $this->userModel->getUserInfo($id, $user_fullname, $email); // Chama o método getUserInfo da classe User para obter os dados do usuário logado
+        }
+}
 ?>
